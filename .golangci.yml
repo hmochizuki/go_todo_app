@@ -5,12 +5,14 @@ linters-settings:
     min-complexity: 30
   misspell:
     locale: US
+  shadow:
+    enable: true
 
 linters:
   disable-all: true
   enable:
     - goimports
-    - deadcode
+    - unused
     - errcheck
     - gocognit
     - gocyclo
