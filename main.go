@@ -7,12 +7,18 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/hmochizuki/go_todo_app/config"
 	"golang.org/x/sync/errgroup"
 )
 
 func run(ctx context.Context) error {
+	// グレースフルシャットダウン
+	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
 	cfg, err := config.New()
 	if err != nil {
 		return err
@@ -41,6 +47,7 @@ func run(ctx context.Context) error {
 		return nil
 	})
 
+	// キャンセルシグナルを受け取るまでブロック
 	<-ctx.Done()
 	if err := server.Shutdown(context.Background()); err != nil {
 		log.Printf("failed to shutdown: %+v", err)
