@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -11,7 +12,7 @@ type ErrResponse struct {
 	Details []string `json:"details,omitempty"` // 値が空の場合フィールドを省略する
 }
 
-func RespondJson(w http.ResponseWriter, body any, status int) {
+func RespondJson(ctx context.Context, w http.ResponseWriter, body any, status int) {
 	w.Header().Set("Content-Type", "application/json")
 	bodyBytes, err := json.Marshal(body) // marshal: メモリに適した構造体を、通信の意適したキシキ(Json)に変換する
 	if err != nil {
