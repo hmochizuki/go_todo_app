@@ -41,12 +41,14 @@ func main() {
 		os.Exit(1)
 	}
 	port := os.Args[1]
-	listener, err := net.Listen("tcp", "localhost:"+port)
+	listener, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		log.Printf("failed to listen port %s: %+v", port, err)
 		os.Exit(1)
 	}
 
+	url := fmt.Sprintf("http://%s", port)
+	log.Printf("server is running on %s", url)
 	if err := run(context.Background(), listener); err != nil {
 		log.Printf("failed to terminate server: %+v", err)
 		os.Exit(1)
