@@ -31,10 +31,6 @@ func AssertResponse(t *testing.T, got *http.Response, status int, body []byte) {
 	t.Helper()
 	t.Cleanup(func() { _ = got.Body.Close() })
 
-	body, err := io.ReadAll(got.Body)
-	if err != nil {
-		t.Fatalf("failed to read body: %v", err)
-	}
 	gb, err := io.ReadAll(got.Body)
 	if err != nil {
 		t.Fatalf("failed to read body: %v", err)

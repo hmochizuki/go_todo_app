@@ -15,7 +15,7 @@ type AddTask struct {
 	validator *validator.Validate
 }
 
-func (h *AddTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (at *AddTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var b struct {
@@ -26,17 +26,17 @@ func (h *AddTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.validator.Struct(b); err != nil {
+	if err := at.validator.Struct(b); err != nil {
 		RespondJson(ctx, w, &ErrResponse{Message: "validation failed", Details: []string{err.Error()}}, http.StatusBadRequest)
 		return
 	}
 
-	t := entity.Task{
+	t := &entity.Task{
 		Title:     b.Title,
-		Status:    entity.TaskStatusTodo,
+		Status:    "todo",
 		CreatedAt: time.Now(),
 	}
-	id, err := store.Tasks.Add(&t)
+	id, err := at.Store.Add(t)
 
 	if err != nil {
 		RespondJson(ctx, w, ErrResponse{Message: "failed to add task"}, http.StatusInternalServerError)
