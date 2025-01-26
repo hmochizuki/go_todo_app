@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"testing"
 
@@ -11,14 +12,20 @@ import (
 )
 
 func TestRun(t *testing.T) {
+	listener, err := net.Listen("tcp", "localhost:0")
+	if err != nil {
+		t.Fatalf("failed to listen port: %+v", err)
+	}
 	ctx, cancel := context.WithCancel(context.Background())
 	eg, ctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		return run(ctx)
+		return run(ctx, listener)
 	})
 
 	in := "message"
-	response, err := http.Get("http://localhost:18080/" + in)
+	url := fmt.Sprintf("http://%s/%s", listener.Addr().String(), in)
+	response, err := http.Get(url)
+	t.Logf("try request to %s", url)
 	if err != nil {
 		t.Errorf("failed to get: %+v", err)
 	}
