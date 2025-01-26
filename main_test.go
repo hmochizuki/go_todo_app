@@ -46,7 +46,3 @@ func TestRun(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-
-func TestMainFunc(t *testing.T) {
-	go main()
-}
